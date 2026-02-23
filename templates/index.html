@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SQL Assistant</title>
+
+    ```
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    ```
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        ```
+        <header>
+            <h1>AI SQL Assistant</h1>
+            <p>Type a natural language query about employees, and I'll execute it for you.</p>
+        </header>
+
+        <div class="input-section">
+            <input type="text" id="query-input" placeholder="e.g., Show employees in IT with salary > 50000"
+                autocomplete="off">
+            <button onclick="sendQuery()">Run Query</button>
+        </div>
+
+        <div id="loading" class="hidden">AI is generating SQL...</div>
+
+        <div id="results-area" class="hidden">
+
+            <!-- Generated SQL -->
+            <div class="card">
+                <h3>Generated SQL</h3>
+                <code id="sql-output">SELECT * FROM ...</code>
+            </div>
+
+            <!-- Results -->
+            <div class="card">
+                <h3>Results</h3>
+                <div id="table-container"></div>
+                <div id="message-output" class="success hidden"></div>
+                <div id="error-message" class="error hidden"></div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Powered by Hugging Face (FLAN-T5) & MySQL</p>
+        </footer>
+        ```
+
+    </div>
+
+    <script>
+
+        async function sendQuery() {
+
+            const queryInput = document.getElementById('query-input');
+            const query = queryInput.value.trim();
+
+            const loading = document.getElementById('loading');
+            const resultsArea = document.getElementById('results-area');
+            const sqlOutput = document.getElementById('sql-output');
+            const tableContainer = document.getElementById('table-container');
+            const messageOutput = document.getElementById('message-output');
+            const errorMessage = document.getElementById('error-message');
+
+            if (!query) {
+                alert("Please enter a query!");
+                return;
+            }
+
+            // Reset UI
+            resultsArea.classList.add('hidden');
+            loading.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+            tableContainer.innerHTML = '';
+            messageOutput.classList.add('hidden');
+            messageOutput.innerText = '';
+
+            try {
+
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+
+                loading.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+
+                if (data.error) {
+                    sqlOutput.innerText = data.sql || "Error during generation";
+                    errorMessage.innerText = data.error;
+                    errorMessage.classList.remove('hidden');
+                } else {
+                    sqlOutput.innerText = data.sql;
+                    
+                    if (data.columns && data.data) {
+                        // SELECT query - show table
+                        renderTable(data.columns, data.data);
+                    } else if (data.message) {
+                        // INSERT/UPDATE/DELETE query - show message
+                        messageOutput.innerText = data.message;
+                        messageOutput.classList.remove('hidden');
+                    }
+                }
+
+            } catch (error) {
+                loading.classList.add('hidden');
+                alert("An error occurred: " + error);
+            }
+        }
+
+
+        function renderTable(columns, rows) {
+
+            const tableContainer = document.getElementById('table-container');
+
+            if (!rows || rows.length === 0) {
+                tableContainer.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+
+            let html = '<table><thead><tr>';
+
+            columns.forEach(col => {
+                html += `<th>${col}</th>`;
+            });
+
+            html += '</tr></thead><tbody>';
+
+            rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+
+            tableContainer.innerHTML = html;
+        }
+
+
+        // Enter key support
+        document.getElementById('query-input')
+            .addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    sendQuery();
+                }
+            });
+
+    </script>
+
+</body>
+
+</html>
