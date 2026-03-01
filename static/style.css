@@ -1,159 +1,127 @@
-/* Global Styles */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f7f6;
     margin: 0;
-    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #1f2937, #111827);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    color: #333;
+    height: 100vh;
+    color: #fff;
 }
 
-.container {
-    width: 90%;
-    max-width: 800px;
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-header h1 {
-    font-weight: 500;
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
-
-header p {
-    color: #7f8c8d;
-    font-size: 1.1em;
-}
-
-/* Input Section */
-.input-section {
+.app {
+    width: 800px;
+    height: 90vh;
+    background: #1e1e2f;
+    border-radius: 15px;
     display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
-input[type="text"] {
-    flex-grow: 1;
-    padding: 15px;
-    font-size: 16px;
-    border: 2px solid #ecf0f1;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-input[type="text"]:focus {
-    border-color: #3498db;
-}
-
-button {
-    padding: 15px 30px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: 500;
-}
-
-button:hover {
-    background-color: #2980b9;
-}
-
-/* Results Area */
-.hidden {
-    display: none;
-}
-
-#loading {
+.header {
     text-align: center;
-    color: #7f8c8d;
-    font-style: italic;
-    margin: 20px 0;
-}
-
-.card {
-    background-color: #fcfcfc;
-    border: 1px solid #ecf0f1;
-    border-radius: 8px;
     padding: 20px;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
 }
 
-.card h3 {
-    margin-top: 0;
-    font-size: 1.2em;
-    color: #34495e;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-code {
-    display: block;
-    background-color: #2d3436;
-    color: #dfe6e9;
-    padding: 15px;
-    border-radius: 6px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    overflow-x: auto;
-}
-
-.error {
-    color: #e74c3c;
-    background-color: #fadbd8;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 15px;
-}
-
-.success {
-    color: #27ae60;
-    background-color: #d5f4e6;
-    padding: 15px;
-    border-radius: 6px;
-    margin-top: 15px;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f8f9fa;
-    color: #2c3e50;
+.header h1 {
+    margin: 0;
     font-weight: 600;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+.header p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #aaa;
 }
 
-footer {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 0.9em;
-    color: #bdc3c7;
+.chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    max-width: 75%;
+    animation: fadeIn 0.3s ease;
+}
+
+.user {
+    background: #2563eb;
+    align-self: flex-end;
+}
+
+.system {
+    background: #374151;
+}
+
+.sql {
+    background: #111827;
+    font-family: monospace;
+    color: #10b981;
+}
+
+.error {
+    background: #7f1d1d;
+}
+
+.success {
+    background: #065f46;
+}
+
+.table {
+    background: #111827;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ddd;
+}
+
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    text-align: left;
+}
+
+.input-container {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #333;
+    background: #1f2937;
+}
+
+.input-container input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.input-container button {
+    margin-left: 10px;
+    padding: 12px 20px;
+    background: #2563eb;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+.input-container button:hover {
+    background: #1d4ed8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

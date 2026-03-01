@@ -1,0 +1,47 @@
+AI SQL Assistant – Demo Inputs
+
+SELECT Queries
+
+Show all employees
+
+List all employees
+
+Show employees in IT
+
+List employees in HR
+
+Show employees with salary above 50000
+
+Show employees with salary below 60000
+
+Show employees in IT with salary above 50000
+
+List employees in Sales with salary > 40000
+
+INSERT Queries
+
+Add employee Rohit in IT with salary 20000 and city Chennai
+
+Insert employee Karthik in HR with salary 45000 and city Bangalore
+
+Add employee Priya in Marketing with salary 55000
+
+UPDATE Queries
+
+Update salary of Rohit to 30000
+
+Change salary of Priya to 60000
+
+Update Rohit salary to 35000
+
+DELETE Queries
+
+Delete employee Rohit
+
+Remove Priya
+
+Edge Case Tests
+
+Add employee Rohit in IT with salary 20000 and city Chennai (Run twice to test duplicate handling)
+
+Drop table employees (Should trigger security restriction)
