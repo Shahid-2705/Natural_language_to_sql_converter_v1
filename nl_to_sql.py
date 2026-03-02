@@ -33,15 +33,13 @@ class NLToSQL:
             return "UNKNOWN"
 
     # -----------------------------
-    # ENTITY EXTRACTION (ROBUST)
+    # ENTITY EXTRACTION
     # -----------------------------
     def extract_entities(self, query):
         entities = {}
         q = query.lower()
 
-        # -----------------------------
         # Salary extraction
-        # -----------------------------
         salary_match = re.search(r'\b(\d{3,6})\b', q)
         if salary_match:
             entities["salary"] = salary_match.group(1)
@@ -54,36 +52,21 @@ class NLToSQL:
         elif "salary" in q:
             entities["salary_operator"] = "="
 
-        # -----------------------------
         # Department extraction
-        # -----------------------------
         for d in self.departments:
             if d.lower() in q:
                 entities["department"] = d
                 break
 
-        # -----------------------------
-        # City extraction
-        # -----------------------------
-        city_match = re.search(r'city\s+([a-zA-Z]+)', q)
-        if city_match:
+        # City extraction (update city of kishor to delhi)
+        city_match = re.search(r'to\s+([a-zA-Z]+)', q)
+        if city_match and "city" in q:
             entities["city"] = city_match.group(1).capitalize()
 
-        # -----------------------------
-        # Name extraction (order independent)
-        # -----------------------------
-        cleaned = re.sub(
-            r'(update|add|insert|delete|remove|change|salary|of|to|with|in|employee|city|above|below|greater|less|than|\d+)',
-            '',
-            q
-        )
-
-        words = cleaned.split()
-
-        for word in words:
-            if word.isalpha():
-                entities["name"] = word.capitalize()
-                break
+        # Name extraction (improved)
+        name_match = re.search(r'of\s+([a-zA-Z]+)', q)
+        if name_match:
+            entities["name"] = name_match.group(1).capitalize()
 
         return entities
 
@@ -124,13 +107,34 @@ class NLToSQL:
                 )
 
         # -----------------------------
-        # UPDATE
+        # UPDATE (NOW DYNAMIC)
         # -----------------------------
         elif intent == "UPDATE":
-            if "name" in entities and "salary" in entities:
+
+            if "name" not in entities:
+                return None
+
+            # Update salary
+            if "salary" in entities:
                 return (
                     "UPDATE employees "
                     f"SET salary = {entities['salary']} "
+                    f"WHERE name = '{entities['name']}';"
+                )
+
+            # Update city
+            if "city" in entities:
+                return (
+                    "UPDATE employees "
+                    f"SET city = '{entities['city']}' "
+                    f"WHERE name = '{entities['name']}';"
+                )
+
+            # Update department
+            if "department" in entities:
+                return (
+                    "UPDATE employees "
+                    f"SET department = '{entities['department']}' "
                     f"WHERE name = '{entities['name']}';"
                 )
 
@@ -160,7 +164,7 @@ class NLToSQL:
             return sql
 
         # -----------------------------
-        # FALLBACK TO MODEL (STRICT)
+        # FALLBACK TO MODEL
         # -----------------------------
         prompt = f"""
 Convert this English query to valid MySQL.
@@ -185,9 +189,7 @@ SQL:
 
         sql_query = output[0]['generated_text'].strip()
 
-        # -----------------------------
-        # STRICT VALIDATION
-        # -----------------------------
+        # Strict validation
         if not re.match(r"^(SELECT|INSERT|UPDATE|DELETE)\s", sql_query, re.IGNORECASE):
             raise ValueError("Invalid SQL generated.")
 
